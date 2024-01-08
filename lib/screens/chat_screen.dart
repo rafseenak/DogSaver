@@ -48,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
               await _auth.signOut();
               final sharedPreference = await SharedPreferences.getInstance();
               await sharedPreference.setBool(SAVE_KEY_NAME, false);
+              await sharedPreference.setBool(ANONIMOUS_KEY, false);
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (ctx) => const LoginScreen()),
                 (route) => false,

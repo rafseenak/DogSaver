@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:dog_catcher/main.dart';
 import 'package:dog_catcher/screens/home_screen.dart';
 import 'package:dog_catcher/screens/login_screen.dart';
 import 'package:dog_catcher/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -156,6 +158,10 @@ class _LoginScreenState extends State<SignUpScreen> {
                       if (result == null) {
                         _loginError(context);
                       } else {
+                        final sharedPreference =
+                            await SharedPreferences.getInstance();
+                        await sharedPreference.setBool(SAVE_KEY_NAME, true);
+                        await sharedPreference.setBool(ANONIMOUS_KEY, true);
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (ctx) => const HomeScreen(),

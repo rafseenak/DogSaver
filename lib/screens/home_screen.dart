@@ -1,7 +1,10 @@
+import 'package:dog_catcher/main.dart';
 import 'package:dog_catcher/screens/chat_screen.dart';
+import 'package:dog_catcher/screens/continue_login.dart';
 import 'package:dog_catcher/screens/notification_screen.dart';
 import 'package:dog_catcher/screens/report_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,12 +15,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int myIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
 
-  List<Widget> widgetList = [
-    NotificationScreen(),
-    ReportScreen(),
-    const ChatScreen(),
-  ];
+  Future<void> init() async {
+    final sharedPreference = await SharedPreferences.getInstance();
+
+    widgetList = (sharedPreference.getBool(ANONIMOUS_KEY) == true)
+        ? [
+            NotificationScreen(),
+            const ContinueLogin(),
+            const ContinueLogin(),
+          ]
+        : [
+            NotificationScreen(),
+            ReportScreen(),
+            const ChatScreen(),
+          ];
+  }
+
+  List<Widget> widgetList = (2 == 2)
+      ? [
+          NotificationScreen(),
+          ReportScreen(),
+          const ChatScreen(),
+        ]
+      : [
+          NotificationScreen(),
+          ReportScreen(),
+          const ChatScreen(),
+        ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_activity),

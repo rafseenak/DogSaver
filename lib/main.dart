@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 const SAVE_KEY_NAME = 'UserLoggedIn';
+const ANONIMOUS_KEY = 'Anonimous';
 
 Future _firebaseBackgroundMessaging(RemoteMessage message) async {
   if (message.notification != null) {

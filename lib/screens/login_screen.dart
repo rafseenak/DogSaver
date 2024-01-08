@@ -143,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final sharedPreference =
                           await SharedPreferences.getInstance();
                       await sharedPreference.setBool(SAVE_KEY_NAME, true);
+                      await sharedPreference.setBool(ANONIMOUS_KEY, false);
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (ctx) => const HomeScreen(),
@@ -164,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         final sharedPreference =
                             await SharedPreferences.getInstance();
                         await sharedPreference.setBool(SAVE_KEY_NAME, true);
+                        await sharedPreference.setBool(ANONIMOUS_KEY, true);
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                             builder: (ctx) => const HomeScreen(),

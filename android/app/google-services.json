@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "78165056938",
+    "firebase_url": "https://dog-catcher-c6ed4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "dog-catcher-c6ed4",
+    "storage_bucket": "dog-catcher-c6ed4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78165056938:android:326e0c8500c569e3185fd3",
+        "android_client_info": {
+          "package_name": "com.example.dog_catcher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE94guAiIrAfU1rWemSFRda_Rt4j3QcMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -35,15 +35,18 @@ class _ChatScreenState extends State<ChatScreen> {
         title: const Text(
           'Chat With Local Animal Control',
           style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 247, 172, 197),
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
             onPressed: () async {
               await _auth.signOut();
               final sharedPreference = await SharedPreferences.getInstance();
@@ -106,14 +109,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   : CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.blue,
               ),
               child: Text(
                 data['message'],
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 14, color: Colors.white),
               ),
             ),
           ],
@@ -123,24 +126,28 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _messageController,
-            decoration: const InputDecoration(
-              hintText: 'Type Your Message Here',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _messageController,
+              decoration: const InputDecoration(
+                hintText: 'Type Your Message Here',
+              ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: sendMessage,
-          icon: const Icon(
-            Icons.send,
-            size: 40,
-          ),
-        )
-      ],
+          IconButton(
+            onPressed: sendMessage,
+            icon: const Icon(
+              Icons.send,
+              size: 40,
+              color: Colors.blue,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

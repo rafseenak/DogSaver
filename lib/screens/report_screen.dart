@@ -1,19 +1,34 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
 import 'package:dog_catcher/main.dart';
 import 'package:dog_catcher/screens/login_screen.dart';
 import 'package:dog_catcher/services/auth_service.dart';
 import 'package:dog_catcher/services/notification_services.dart';
 import 'package:dog_catcher/services/report_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ReportScreen extends StatelessWidget {
-  ReportScreen({super.key});
+class ReportScreen extends StatefulWidget {
+  const ReportScreen({super.key});
+
+  @override
+  State<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends State<ReportScreen> {
+  File? _selectedImage;
+
   final AuthService _auth = AuthService();
+
   final _nameController = TextEditingController();
+
   final _phoneController = TextEditingController();
+
   final _locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,15 +36,18 @@ class ReportScreen extends StatelessWidget {
         title: const Text(
           'Report',
           style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 247, 172, 197),
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
             onPressed: () async {
               await _auth.signOut();
               final sharedPreference = await SharedPreferences.getInstance();
@@ -113,6 +131,43 @@ class ReportScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          gallaryImage();
+                        },
+                        icon: const Icon(Icons.image_rounded),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white)),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () {
+                          captureImage();
+                        },
+                        icon: const Icon(Icons.camera_enhance_rounded),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  (_selectedImage != null)
+                      ? Image.file(
+                          _selectedImage!,
+                          height: 50,
+                        )
+                      : const SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -131,17 +186,23 @@ class ReportScreen extends StatelessWidget {
                       final notificationService = NotificationService();
                       if (_nameController.text.isNotEmpty &&
                           _phoneController.text.isNotEmpty &&
-                          _locationController.text.isNotEmpty) {
+                          _locationController.text.isNotEmpty &&
+                          _selectedImage != null) {
                         reportService.reportDogs(
                           _nameController.text,
                           _phoneController.text,
                           _locationController.text,
+                          _selectedImage!.path,
                         );
                         notificationService.addNotification('Dog Found',
                             'Found Some Stray Dogs Near ${_locationController.text}');
+                        uploadImage();
                         _nameController.clear();
                         _phoneController.clear();
                         _locationController.clear();
+                        setState(() {
+                          _selectedImage = null;
+                        });
                       }
                     },
                     child: const Text('SUBMIT'),
@@ -153,5 +214,34 @@ class ReportScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<XFile?> gallaryImage() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (returnedImage != null) {
+      setState(() {
+        _selectedImage = File(returnedImage.path);
+      });
+    }
+    return null;
+  }
+
+  Future<XFile?> captureImage() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (returnedImage != null) {
+      setState(() {
+        _selectedImage = File(returnedImage.path);
+      });
+    }
+    return null;
+  }
+
+  Future uploadImage() async {
+    final path = 'files/${_selectedImage!.path}';
+    final file = File(_selectedImage!.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    ref.putFile(file);
   }
 }

@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ]
         : [
             NotificationScreen(),
-            ReportScreen(),
+            const ReportScreen(),
             const ChatScreen(),
           ];
   }
@@ -40,12 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> widgetList = (2 == 2)
       ? [
           NotificationScreen(),
-          ReportScreen(),
+          const ReportScreen(),
           const ChatScreen(),
         ]
       : [
           NotificationScreen(),
-          ReportScreen(),
+          const ReportScreen(),
           const ChatScreen(),
         ];
 
@@ -60,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color.fromARGB(255, 218, 162, 181),
-        fixedColor: const Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: Colors.blue,
+        fixedColor: Colors.white,
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(

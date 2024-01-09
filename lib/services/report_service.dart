@@ -6,6 +6,7 @@ class ReportService {
     String username,
     String phone,
     String location,
+    String imagePath,
   ) async {
     final issueDoc = FirebaseFirestore.instance.collection('issues');
 
@@ -13,6 +14,7 @@ class ReportService {
       username: username,
       phone: phone,
       location: location,
+      imagePath: imagePath,
       timestamp: Timestamp.now(),
     );
     await issueDoc.add(data.toJson());

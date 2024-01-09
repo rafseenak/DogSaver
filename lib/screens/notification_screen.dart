@@ -19,15 +19,18 @@ class NotificationScreen extends StatelessWidget {
         title: const Text(
           'Home',
           style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 0),
+            color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 247, 172, 197),
+        backgroundColor: Colors.blue,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
             onPressed: () async {
               await _auth.signOut();
               final sharedPreference = await SharedPreferences.getInstance();
@@ -56,11 +59,28 @@ class NotificationScreen extends StatelessWidget {
       stream: notificationService.getNotifications(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Text('Error ${snapshot.error}');
+          return Center(
+            child: Text(
+              'Error ${snapshot.error}',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading');
+          return const Center(
+            child: Text(
+              'Loading...',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
         }
+
         return ListView(
           children: snapshot.data!.docs
               .map((document) => _buildMessageItem(document))
@@ -76,9 +96,11 @@ class NotificationScreen extends StatelessWidget {
     return ListTile(
       title: Text(
         data['heading'],
+        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
       ),
       subtitle: Text(
         data['message'],
+        style: const TextStyle(color: Colors.black),
       ),
     );
   }

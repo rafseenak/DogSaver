@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PushNotofications {
   static final _firebaseMessaging = FirebaseMessaging.instance;
@@ -15,4 +16,9 @@ class PushNotofications {
     final token = _firebaseMessaging.getToken();
     print("Device token $token");
   }
+
+  // static Future localInit() async {
+  //   const AndroidInitializationSettings initializationSettingsAndroid =
+  //       AndroidInitializationSettings('defaultIcon');
+  // }
 }

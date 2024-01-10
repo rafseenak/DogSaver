@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:dog_catcher/main.dart';
 import 'package:dog_catcher/screens/login_screen.dart';
 import 'package:dog_catcher/services/auth_service.dart';
+import 'package:dog_catcher/services/gps_service.dart';
 import 'package:dog_catcher/services/notification_services.dart';
 import 'package:dog_catcher/services/report_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -20,7 +22,7 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   File? _selectedImage;
-
+  Map? gps;
   final AuthService _auth = AuthService();
 
   final _nameController = TextEditingController();
@@ -28,7 +30,6 @@ class _ReportScreenState extends State<ReportScreen> {
   final _phoneController = TextEditingController();
 
   final _locationController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,7 +167,10 @@ class _ReportScreenState extends State<ReportScreen> {
                           _selectedImage!,
                           height: 50,
                         )
-                      : const SizedBox(height: 10),
+                      : const SizedBox(
+                          width: 10,
+                          height: 10,
+                        ),
                   const SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -181,18 +185,30 @@ class _ReportScreenState extends State<ReportScreen> {
                         vertical: 20,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final reportService = ReportService();
                       final notificationService = NotificationService();
+                      int timestampInMillis =
+                          DateTime.now().millisecondsSinceEpoch;
+                      DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+                          timestampInMillis);
+                      String isoFormatted =
+                          DateFormat('yyyy-MM-ddTHH:mm:ss.SSS')
+                              .format(dateTime);
+                      String filetype = _selectedImage!.path
+                          .substring(_selectedImage!.path.length - 3);
+                      final path = 'files/$isoFormatted.$filetype';
                       if (_nameController.text.isNotEmpty &&
                           _phoneController.text.isNotEmpty &&
                           _locationController.text.isNotEmpty &&
                           _selectedImage != null) {
+                        await getLocation();
                         reportService.reportDogs(
                           _nameController.text,
                           _phoneController.text,
                           _locationController.text,
-                          _selectedImage!.path,
+                          path,
+                          gps,
                         );
                         notificationService.addNotification('Dog Found',
                             'Found Some Stray Dogs Near ${_locationController.text}');
@@ -239,9 +255,24 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future uploadImage() async {
-    final path = 'files/${_selectedImage!.path}';
+    int timestampInMillis = DateTime.now().millisecondsSinceEpoch;
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestampInMillis);
+    String isoFormatted =
+        DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').format(dateTime);
+    String filetype =
+        _selectedImage!.path.substring(_selectedImage!.path.length - 3);
+    final path = 'files/$isoFormatted.$filetype';
     final file = File(_selectedImage!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     ref.putFile(file);
+  }
+
+  Future getLocation() async {
+    final gpsService = GPSService();
+    final returnedGps = await gpsService.determinePosition();
+    setState(() {
+      gps = returnedGps.toJson();
+    });
+    return null;
   }
 }

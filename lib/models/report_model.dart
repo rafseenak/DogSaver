@@ -5,6 +5,7 @@ class Report {
   final String phone;
   final String location;
   final String imagePath;
+  final Map? gps;
   final Timestamp timestamp;
   Report({
     required this.username,
@@ -12,6 +13,7 @@ class Report {
     required this.location,
     required this.imagePath,
     required this.timestamp,
+    required this.gps,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class Report {
       'phone': phone,
       'location': location,
       'imagepath': imagePath,
+      'gps': gps,
       'timestamp': timestamp,
     };
   }
